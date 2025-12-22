@@ -1,28 +1,36 @@
 import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 import Link from 'next/link';
+// Importamos el nuevo componente
+import TarjetaLealtad from '@/components/TarjetaLealtad';
 
-// Ahora la función recibe "searchParams" (lo que va después del ? en la URL)
 export default async function Home({ searchParams }: { searchParams: Promise<{ categoria?: string }> }) {
   
-  // 1. Leemos qué categoría pidió el usuario (si es que pidió alguna)
+  // 1. Leemos qué categoría pidió el usuario
   const { categoria } = await searchParams;
 
   // 2. Conectamos a la base de datos
   await dbConnect();
 
   // 3. Preparamos el filtro
-  // Si hay categoría, buscamos solo esa. Si no, buscamos todo ({}).
   const filtro = categoria ? { categoria: categoria } : {};
   
-  // 4. Pedimos los productos con ese filtro
+  // 4. Pedimos los productos
   const products = await Product.find(filtro).lean();
 
   return (
     <main className="min-h-screen p-10 bg-orange-50">
+      
+      {/* Título Principal */}
       <h1 className="text-4xl font-bold text-center text-orange-800 mb-6">
         🍰 Menú Delicioso
       </h1>
+
+      {/* --- AQUÍ INSERTAMOS TU TARJETA DE LEALTAD --- */}
+      <div className="mb-10">
+        <TarjetaLealtad />
+      </div>
+      {/* ------------------------------------------- */}
 
       {/* --- BOTONES DE FILTRO --- */}
       <div className="flex justify-center gap-4 mb-10">
@@ -65,7 +73,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
                     <div className="flex justify-between items-start mb-2">
                       <h2 className="text-xl font-bold text-gray-800">{product.nombre}</h2>
                       <span className="bg-green-100 text-green-800 text-sm font-bold px-2 py-1 rounded-full whitespace-nowrap ml-2">
-                        {product.precio}
+                        ${product.precio}
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm line-clamp-2">{product.descripcion}</p>
