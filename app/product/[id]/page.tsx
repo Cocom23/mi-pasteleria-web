@@ -32,7 +32,7 @@ export default async function ProductDetail({ params }: { params: Promise<{ id: 
   const categoria = product.categoria;
   const imagen = product.imagen || "portada.jpg";
 
-  const whatsappUrl = `https://wa.me/9851082068?text=Hola 👋, me gustaría pedir el postre: ${nombre}.`;
+
 
   return (
     <div className="min-h-screen bg-orange-50 p-6 md:p-10 flex items-center justify-center font-sans">
@@ -70,30 +70,13 @@ export default async function ProductDetail({ params }: { params: Promise<{ id: 
             <p className="text-lg leading-relaxed italic">"{descripcion}"</p>
           </div>
 
-          <div className="space-y-4">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center bg-green-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-green-700 transition-all shadow-md text-lg"
-            >
-              💬 Pedir por WhatsApp
-            </a>
 
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-200"></span>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-400 font-bold">O compra en línea ahora</span>
-              </div>
-            </div>
 
-            {/* Usamos el componente compartido */}
-            <BotonComprar nombreProducto={nombre} />
-          </div>
+          {/* Usamos el componente compartido */}
+          <BotonComprar nombreProducto={nombre} />
         </div>
       </div>
     </div>
+
   );
 }

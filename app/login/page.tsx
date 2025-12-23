@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, User, Loader2, ChefHat } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -13,6 +14,8 @@ export default function LoginPage() {
 
     const { login } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const registered = searchParams.get('registered');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,6 +44,12 @@ export default function LoginPage() {
                     <h1 className="text-2xl font-black text-gray-800">Bienvenido de nuevo</h1>
                     <p className="text-gray-500 text-sm">Ingresa para administrar tu pastelería</p>
                 </div>
+
+                {registered && (
+                    <div className="mb-6 p-3 bg-green-50 text-green-700 text-sm font-bold text-center rounded-lg border border-green-200">
+                        ¡Cuenta creada con éxito! Inicia sesión.
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -88,7 +97,14 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center pt-6 border-t border-gray-100">
+                    <p className="text-sm text-gray-400 mb-2">¿Nuevo por aquí?</p>
+                    <Link href="/register" className="text-orange-600 font-bold hover:underline">
+                        ¡Crea tu cuenta gratis!
+                    </Link>
+                </div>
+
+                <div className="mt-4 text-center">
                     <a href="/" className="text-sm text-gray-400 hover:text-orange-500 transition-colors">
                         ← Volver a la tienda
                     </a>

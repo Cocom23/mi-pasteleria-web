@@ -11,8 +11,8 @@ export async function GET() {
     // 2. Borramos todo lo que haya antes (para no tener duplicados al probar)
     await Product.deleteMany({});
 
-    // Borrar usuario admin si existe para recrearlo fresco
-    await User.findOneAndDelete({ email: 'admin@coffee.break' });
+    // Borrar usuario admin si existe (borramos todos los que coincidan para evitar errores de duplicados)
+    await User.deleteMany({ email: 'admin@coffee.break' });
 
     // 3. Definimos tus productos iniciales
     const productosIniciales = [
