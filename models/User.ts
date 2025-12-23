@@ -8,13 +8,29 @@ const UserSchema = new Schema(
       required: true,
       unique: true, // No puede haber dos usuarios con el mismo correo
     },
+    // Autenticación y Roles
+    password: {
+      type: String,
+      select: false, // Por seguridad, no se devuelve en consultas normales
+    },
+    role: {
+      type: String,
+      enum: ['client', 'admin', 'superuser'],
+      default: 'client',
+    },
+    nombre: {
+      type: String,
+      default: 'Cliente Dulce',
+    },
+
+    // Sistema de Lealtad
     sellos: {
       type: Number,
-      default: 0, // Todos empiezan con 0 sellos
+      default: 0,
     },
     premios: {
       type: Number,
-      default: 0, // Cupones canjeables disponibles
+      default: 0,
     },
     // Fecha de registro automática
     createdAt: {
@@ -23,7 +39,7 @@ const UserSchema = new Schema(
     },
   },
   {
-    timestamps: true, // Agrega automáticamente cuándo se creó y cuándo se actualizó
+    timestamps: true,
   }
 );
 

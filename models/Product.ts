@@ -20,6 +20,10 @@ const ProductSchema = new Schema({
   categoria: {
     type: String,
     default: 'postres', // Para filtrar entre bebidas y comida después
+  },
+  stock: {
+    type: Number,
+    default: 0,
   }
 }, {
   timestamps: true, // Esto guarda automáticamente la fecha de creación

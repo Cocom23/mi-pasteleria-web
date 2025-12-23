@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Link from "next/link"; // Importamos Link para poder navegar
+import Link from "next/link";
+import { AuthProvider } from "@/context/AuthContext";
+import NavbarUser from "@/components/NavbarUser"; // Nuevo componente de UI
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,37 +20,38 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        
-        {/* --- BARRA DE NAVEGACIÓN (NAVBAR) --- */}
-        <nav className="bg-orange-600 text-white shadow-md">
-          <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            
-            {/* Logo / Nombre de la tienda */}
-            <Link href="/" className="text-2xl font-bold hover:text-orange-100 transition-colors">
-              🍰 The Coffee Break
-            </Link>
+        <AuthProvider>
+          {/* --- BARRA DE NAVEGACIÓN (NAVBAR) --- */}
+          <nav className="bg-orange-600 text-white shadow-md sticky top-0 z-50">
+            <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
 
-            {/* Enlaces del menú */}
-            <div className="space-x-6 font-medium">
-              <Link href="/" className="hover:underline">
-                Inicio
+              {/* Logo / Nombre de la tienda */}
+              <Link href="/" className="text-2xl font-bold hover:text-orange-100 transition-colors flex items-center gap-2">
+                🍰 The Coffee Break
               </Link>
-              <Link href="#" className="hover:underline opacity-80 cursor-not-allowed" title="Próximamente">
-                Contacto
-              </Link>
+
+              {/* Enlaces del menú y Usuario */}
+              <div className="flex items-center gap-6 font-medium">
+                <Link href="/" className="hover:underline hidden md:block">
+                  Inicio
+                </Link>
+                <div className="h-6 w-px bg-orange-400 hidden md:block"></div>
+
+                {/* Componente de Usuario (Login/Avatar) */}
+                <NavbarUser />
+              </div>
+
             </div>
-          
-          </div>
-        </nav>
+          </nav>
 
-        {/* --- AQUÍ SE CARGA EL CONTENIDO DE TUS PÁGINAS --- */}
-        {children}
+          {/* --- AQUÍ SE CARGA EL CONTENIDO DE TUS PÁGINAS --- */}
+          {children}
 
-        {/* --- PIE DE PÁGINA (FOOTER) --- */}
-        <footer className="bg-gray-800 text-gray-300 py-8 mt-10 text-center">
-          <p>© 2025 The Coffee Break. Hecho con ❤️ y mucho azúcar.</p>
-        </footer>
-
+          {/* --- PIE DE PÁGINA (FOOTER) --- */}
+          <footer className="bg-gray-800 text-gray-300 py-8 mt-10 text-center">
+            <p>© 2025 The Coffee Break. Hecho con ❤️ y mucho azúcar.</p>
+          </footer>
+        </AuthProvider>
       </body>
     </html>
   );

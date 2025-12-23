@@ -1,21 +1,35 @@
-'use client'; 
+'use client';
 
 import React, { useState } from 'react';
 // Importamos los íconos (Asegúrate de haber instalado: npm install lucide-react)
-import { Gift, Cookie, Star, PartyPopper, User } from 'lucide-react';
+import { Gift, Cookie, Star, PartyPopper, User, Loader2 } from 'lucide-react';
 
 export default function TarjetaLealtad() {
   // --- ESTADOS (Datos Reales) ---
   const [email, setEmail] = useState('');
   const [usuarioCargado, setUsuarioCargado] = useState(false);
   const [cargando, setCargando] = useState(false);
-  
+  const [canjeando, setCanjeando] = useState(false);
+
   // Estos datos ahora vienen de MongoDB (empiezan en 0)
-  const [sellos, setSellos] = useState(0); 
+  const [sellos, setSellos] = useState(0);
   const [premios, setPremios] = useState(0);
 
   const totalSlots = 10;
   const isComplete = sellos >= totalSlots;
+
+  // --- LISTENER PARA ACTUALIZACIÓN AUTOMÁTICA ---
+  React.useEffect(() => {
+    const handleLoyaltyUpdate = (event: any) => {
+      if (usuarioCargado) {
+        setSellos(event.detail.sellos);
+        setPremios(event.detail.premios);
+      }
+    };
+
+    window.addEventListener('loyaltyUpdate', handleLoyaltyUpdate);
+    return () => window.removeEventListener('loyaltyUpdate', handleLoyaltyUpdate);
+  }, [usuarioCargado]);
 
   // --- FUNCIÓN: BUSCAR EN BASE DE DATOS ---
   const consultarPuntos = async (e?: React.FormEvent) => {
@@ -27,7 +41,7 @@ export default function TarjetaLealtad() {
       // Conexión con tu API real
       const res = await fetch(`/api/user?email=${email}`);
       const data = await res.json();
-      
+
       if (res.ok) {
         setSellos(data.sellos);
         setPremios(data.premios);
@@ -37,6 +51,37 @@ export default function TarjetaLealtad() {
       console.error("Error al conectar con la base de datos");
     } finally {
       setCargando(false);
+    }
+  };
+
+  // --- FUNCIÓN: CANJEAR PREMIO ---
+  const canjearPremio = async () => {
+    if (!confirm('¿Estás seguro de que quieres canjear tu premio? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    setCanjeando(true);
+    try {
+      const res = await fetch('/api/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setSellos(data.sellos);
+        setPremios(data.premios);
+        alert(data.mensaje);
+      } else {
+        alert(data.error || 'Error al canjear premio');
+      }
+    } catch (error) {
+      console.error("Error al canjear premio:", error);
+      alert('Error de conexión al canjear premio');
+    } finally {
+      setCanjeando(false);
     }
   };
 
@@ -51,12 +96,12 @@ export default function TarjetaLealtad() {
         <p className="text-slate-500 mb-6 text-sm">
           Ingresa tu correo para ver tus sellos acumulados.
         </p>
-        
+
         <form onSubmit={consultarPuntos} className="flex gap-2">
           <div className="relative flex-1">
             <User className="absolute left-3 top-3 text-slate-400" size={18} />
-            <input 
-              type="email" 
+            <input
+              type="email"
               placeholder="tu@correo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -64,8 +109,8 @@ export default function TarjetaLealtad() {
               required
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={cargando}
             className="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold hover:bg-orange-600 disabled:opacity-50 transition-colors"
           >
@@ -79,7 +124,7 @@ export default function TarjetaLealtad() {
   // --- VISTA 2: LA TARJETA (Cuando ya pusiste tu correo) ---
   return (
     <div className="w-full max-w-md mx-auto mt-8">
-      
+
       {/* Barra superior con info del usuario */}
       <div className="flex justify-between items-center px-4 mb-2 text-xs text-slate-500 font-medium">
         <span>Hola, {email.split('@')[0]}</span>
@@ -90,7 +135,7 @@ export default function TarjetaLealtad() {
 
       {/* COMPONENTE DE TARJETA DE LEALTAD */}
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100 relative transition-all duration-300 transform hover:scale-[1.01]">
-        
+
         {/* Encabezado */}
         <div className={`p-6 text-center transition-colors duration-500 ${isComplete ? 'bg-yellow-100' : 'bg-orange-500'}`}>
           <div className="flex justify-center mb-2">
@@ -104,8 +149,8 @@ export default function TarjetaLealtad() {
             {isComplete ? '¡FELICIDADES! 🎉' : 'Tu Tarjeta Dulce'}
           </h2>
           <p className={`text-sm mt-1 font-medium ${isComplete ? 'text-yellow-800' : 'text-orange-100'}`}>
-            {isComplete 
-              ? '¡Tienes un postre gratis disponible!' 
+            {isComplete
+              ? '¡Tienes un postre gratis disponible!'
               : `¡Te faltan ${totalSlots - sellos} sellos para tu premio!`}
           </p>
 
@@ -123,15 +168,15 @@ export default function TarjetaLealtad() {
             {[...Array(totalSlots)].map((_, index) => {
               const active = index < sellos;
               const isPrizeSlot = index === totalSlots - 1;
-              
+
               return (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`
                     aspect-square rounded-full flex items-center justify-center relative
                     transition-all duration-500 ease-out
-                    ${active 
-                      ? 'bg-orange-500 shadow-md scale-100' 
+                    ${active
+                      ? 'bg-orange-500 shadow-md scale-100'
                       : 'bg-slate-100 shadow-inner scale-95 border border-slate-200'
                     }
                     ${isPrizeSlot && !active ? 'border-2 border-dashed border-yellow-400 bg-yellow-50' : ''}
@@ -153,8 +198,8 @@ export default function TarjetaLealtad() {
 
           {/* Barra de Progreso */}
           <div className="w-full bg-slate-100 rounded-full h-2.5 mb-2 overflow-hidden">
-            <div 
-              className={`h-2.5 rounded-full transition-all duration-700 ${isComplete ? 'bg-yellow-500' : 'bg-orange-400'}`} 
+            <div
+              className={`h-2.5 rounded-full transition-all duration-700 ${isComplete ? 'bg-yellow-500' : 'bg-orange-400'}`}
               style={{ width: `${(sellos / totalSlots) * 100}%` }}
             ></div>
           </div>
@@ -163,25 +208,43 @@ export default function TarjetaLealtad() {
           </p>
 
           {/* Botón de Canje */}
-          {isComplete && (
-            <div className="mt-6 animate-pulse">
-              <button className="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold rounded-xl shadow-lg flex items-center justify-center gap-2">
-                <Star size={20} className="fill-yellow-700 text-yellow-700" />
-                ¡CANJEAR PREMIO!
-                <Star size={20} className="fill-yellow-700 text-yellow-700" />
+          {(isComplete || premios > 0) && (
+            <div className="mt-6">
+              <button
+                onClick={canjearPremio}
+                disabled={canjeando || premios <= 0}
+                className={`w-full py-3 font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all ${premios > 0
+                  ? 'bg-yellow-400 hover:bg-yellow-500 text-yellow-900 active:scale-95'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  } ${canjeando ? 'opacity-50 cursor-wait' : ''}`}
+              >
+                {canjeando ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Canjeando...
+                  </>
+                ) : (
+                  <>
+                    <Star size={20} className="fill-yellow-700 text-yellow-700" />
+                    {premios > 0 ? '¡CANJEAR PREMIO!' : 'Completa tu tarjeta'}
+                    <Star size={20} className="fill-yellow-700 text-yellow-700" />
+                  </>
+                )}
               </button>
-              <p className="text-xs text-center text-slate-400 mt-2">
-                Muestra esta pantalla en caja para reclamar.
-              </p>
+              {premios > 0 && (
+                <p className="text-xs text-center text-slate-400 mt-2">
+                  Muestra esta pantalla en caja para reclamar.
+                </p>
+              )}
             </div>
           )}
         </div>
-        
+
         {/* Decoración inferior (Ticket) */}
         <div className="h-4 bg-slate-800" style={{
-            backgroundImage: "linear-gradient(45deg, #ffffff 25%, transparent 25%), linear-gradient(-45deg, #ffffff 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ffffff 75%), linear-gradient(-45deg, transparent 75%, #ffffff 75%)",
-            backgroundSize: "20px 20px",
-            backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px"
+          backgroundImage: "linear-gradient(45deg, #ffffff 25%, transparent 25%), linear-gradient(-45deg, #ffffff 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ffffff 75%), linear-gradient(-45deg, transparent 75%, #ffffff 75%)",
+          backgroundSize: "20px 20px",
+          backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px"
         }}></div>
       </div>
     </div>

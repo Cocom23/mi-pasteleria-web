@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';     // El @ significa "carpeta raíz"
 import Product from '@/models/Product';
+import User from '@/models/User';
 
 export async function GET() {
   try {
@@ -9,6 +10,9 @@ export async function GET() {
 
     // 2. Borramos todo lo que haya antes (para no tener duplicados al probar)
     await Product.deleteMany({});
+
+    // Borrar usuario admin si existe para recrearlo fresco
+    await User.findOneAndDelete({ email: 'admin@coffee.break' });
 
     // 3. Definimos tus productos iniciales
     const productosIniciales = [
@@ -52,9 +56,19 @@ export async function GET() {
     // 4. Los insertamos en la base de datos
     await Product.insertMany(productosIniciales);
 
-    return NextResponse.json({ 
-      message: "¡Éxito! Base de datos cargada correctamente", 
-      productos: productosIniciales 
+    // 5. Creamos el Super Admin
+    await User.create({
+      email: 'admin@coffee.break',
+      password: 'admin123',
+      role: 'superuser',
+      nombre: 'Dueño Supremo',
+      sellos: 999,
+      premios: 999
+    });
+
+    return NextResponse.json({
+      message: "¡Éxito! Base de datos cargada correctamente",
+      productos: productosIniciales
     });
 
   } catch (error: any) {
