@@ -6,8 +6,8 @@ import Link from "next/link"; // Importamos Link para poder navegar
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mi Pastelería 🍰",
-  description: "Los mejores postres de la ciudad",
+  title: "The Coffee Break - Postres y Más",
+  description: "Porque cada momento merece un dulce toque.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
             
             {/* Logo / Nombre de la tienda */}
             <Link href="/" className="text-2xl font-bold hover:text-orange-100 transition-colors">
-              🍰 Mi Pastelería
+              🍰 The Coffee Break
             </Link>
 
             {/* Enlaces del menú */}
@@ -46,7 +46,7 @@ export default function RootLayout({
 
         {/* --- PIE DE PÁGINA (FOOTER) --- */}
         <footer className="bg-gray-800 text-gray-300 py-8 mt-10 text-center">
-          <p>© 2024 Mi Pastelería. Hecho con ❤️ y mucho azúcar.</p>
+          <p>© 2025 The Coffee Break. Hecho con ❤️ y mucho azúcar.</p>
         </footer>
 
       </body>

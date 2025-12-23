@@ -15,29 +15,36 @@ export async function GET() {
       {
         nombre: "Pastel de Chocolate",
         descripcion: "Esponjoso, con triple capa de cacao y relleno de fudge.",
-        precio: "$45.00",
-        imagen: "portada.jpg",
+        precio: "$50.00",
+        imagen: "chocolate.jpg",
         categoria: "postres"
       },
       {
         nombre: "Cheesecake de Frutos Rojos",
         descripcion: "Base de galleta crujiente con topping natural de fresas.",
         precio: "$55.00",
-        imagen: "portada.jpg",
+        imagen: "rojos.jpg",
         categoria: "postres"
       },
       {
         nombre: "Café Latte Especial",
         descripcion: "Nuestro blend de la casa con arte latte personalizado.",
-        precio: "$35.00",
-        imagen: "portada.jpg",
+        precio: "$60.00",
+        imagen: "cafe.jpg",
         categoria: "bebidas"
       },
       {
         nombre: "Tarta de Limón",
         descripcion: "El equilibrio perfecto entre dulce y ácido con merengue.",
-        precio: "$40.00",
-        imagen: "portada.jpg",
+        precio: "$55.00",
+        imagen: "limon.jpg",
+        categoria: "postres"
+      },
+      {
+        nombre: "Muffin de Magali",
+        descripcion: "Suave y fresca, repleta de amor solo para su novio, el creador de esta página.",
+        precio: "$1,000.00",
+        imagen: "mufin.jpg",
         categoria: "postres"
       }
     ];

@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
               <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-orange-100 h-full flex flex-col">
                 <div className="h-48 overflow-hidden bg-gray-200">
                   <img 
-                    src={product.imagen || "/portada.jpg"} 
+                    src={product.imagen || "portada.jpg"} 
                     alt={product.nombre}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />

@@ -15,7 +15,7 @@ const ProductSchema = new Schema({
   },
   imagen: {
     type: String,
-    default: '/portada.jpg',
+    default: 'portada1.jpg',
   },
   categoria: {
     type: String,
