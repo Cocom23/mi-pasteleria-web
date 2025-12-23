@@ -1,5 +1,8 @@
 'use client';
 
+// 👇 ESTA ES LA LÍNEA QUE ARREGLA EL ERROR DE BUILD 👇
+export const dynamic = 'force-dynamic'; 
+
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -22,10 +25,10 @@ export default function LoginPage() {
         setError('');
         setIsLoggingIn(true);
 
+        // Asumimos que tu hook login devuelve true/false
         const success = await login(email, password);
 
         if (success) {
-            // Redirección inteligente basada en rol (podríamos mejorar esto leyendo el user del contexto, pero por ahora vamos al home y que el navbar guíe)
             router.push('/');
         } else {
             setError('Credenciales incorrectas. Intenta de nuevo.');
@@ -45,8 +48,9 @@ export default function LoginPage() {
                     <p className="text-gray-500 text-sm">Ingresa para administrar tu pastelería</p>
                 </div>
 
+                {/* Mensaje de éxito si viene de registrarse */}
                 {registered && (
-                    <div className="mb-6 p-3 bg-green-50 text-green-700 text-sm font-bold text-center rounded-lg border border-green-200">
+                    <div className="mb-6 p-3 bg-green-50 text-green-700 text-sm font-bold text-center rounded-lg border border-green-200 animate-in fade-in slide-in-from-top-2">
                         ¡Cuenta creada con éxito! Inicia sesión.
                     </div>
                 )}
@@ -83,7 +87,7 @@ export default function LoginPage() {
                     </div>
 
                     {error && (
-                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg text-center font-medium animate-pulse">
+                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg text-center font-medium animate-pulse border border-red-100">
                             {error}
                         </div>
                     )}
@@ -91,7 +95,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={isLoggingIn}
-                        className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2"
+                        className="w-full bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition-all shadow-lg active:scale-95 flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isLoggingIn ? <Loader2 className="animate-spin" /> : 'Ingresar al Portal'}
                     </button>
