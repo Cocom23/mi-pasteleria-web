@@ -73,8 +73,8 @@ function BotonComprar({ nombreProducto }: { nombreProducto: string }) {
 export default function ProductDetail() {
   const product = {
     nombre: "Pastel Especial de la Casa",
-    precio: "25.00",
-    descripcion: "Nuestra creación más famosa con chocolate belga y fresas frescas.",
+    precio: "1,000.00",
+    descripcion: "Nuestra creación más famosa con chocolate belga y fresas frescas y con mucho amor para su novio, jechuch.",
     categoria: "Especialidad"
   };
 
